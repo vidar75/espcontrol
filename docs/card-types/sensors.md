@@ -20,7 +20,7 @@ A Sensor card is read-only. It displays a Home Assistant `sensor`, `binary_senso
 |---|---|
 | **Numeric** | A live number, optional unit, and label. **Large Sensor Numbers** is available on Large cards. |
 | **Time** | A compact duration such as `36m` or `1h 30m`. Leave **Incoming Value Unit** on Auto unless the entity does not report a usable unit. |
-| **Text** | The live state beside a chosen icon. Advanced settings can replace up to two raw states with friendlier text. **Large Text** hides the icon and shows the state in a big font instead, which suits short values such as a weekday name. |
+| **Text** | The live state beside a chosen icon. Advanced settings can replace up to two raw states with friendlier text. **Large Text** hides the icon and shows the state centred in a big font instead, which suits short values such as a weekday name. |
 | **Icon** | A normal and optional active icon for a status-style sensor. |
 
 **Large Text** uses the biggest text font on Wide and Large cards and a smaller title font on Single cards. Long states are cut short with an ellipsis instead of wrapping, so keep the text to a word or two.

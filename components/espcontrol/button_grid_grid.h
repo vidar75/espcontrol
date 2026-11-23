@@ -632,6 +632,8 @@ inline void setup_card_visual(BtnSlot &s, const ParsedCfg &p,
   if (s.text_lbl) lv_obj_clear_flag(s.text_lbl, LV_OBJ_FLAG_HIDDEN);
   if (s.icon_lbl) lv_obj_align(s.icon_lbl, LV_ALIGN_TOP_LEFT, 0, 0);
   if (s.sensor_container) lv_obj_align(s.sensor_container, LV_ALIGN_TOP_LEFT, 0, 0);
+  // Large Text centres the value label; restore the default for other cards.
+  if (s.sensor_lbl) lv_obj_set_style_text_align(s.sensor_lbl, LV_TEXT_ALIGN_AUTO, LV_PART_MAIN);
   if (s.text_lbl) lv_obj_align(s.text_lbl, LV_ALIGN_BOTTOM_LEFT, 0, 0);
   // A previous unsupported or information-only config may have disabled this
   // persistent button. Restore the default before the current driver applies

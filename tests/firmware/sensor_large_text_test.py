@@ -28,11 +28,15 @@ void lv_label_set_text(lv_obj_t *, const char *) {}
 #include "button_grid_style.h"
 struct lv_font_t { int id; };
 constexpr int LV_PART_MAIN = 0, LV_STATE_DEFAULT = 0, LV_STATE_CHECKED = 1;
-constexpr int LV_OBJ_FLAG_HIDDEN = 1, LV_OBJ_FLAG_CLICKABLE = 2;
+constexpr int LV_OBJ_FLAG_HIDDEN = 1, LV_OBJ_FLAG_CLICKABLE = 2, LV_OBJ_FLAG_SCROLLABLE = 4;
+constexpr int LV_ALIGN_TOP_LEFT = 0, LV_ALIGN_CENTER = 1;
+constexpr int LV_TEXT_ALIGN_AUTO = 0, LV_TEXT_ALIGN_CENTER = 1;
 constexpr int LV_LABEL_LONG_WRAP = 0, LV_LABEL_LONG_DOT = 1;
 using lv_style_selector_t = int;
 struct lv_obj_t {
-  int flags = 0;
+  int flags = LV_OBJ_FLAG_SCROLLABLE;
+  int align = LV_ALIGN_TOP_LEFT;
+  int text_align = LV_TEXT_ALIGN_AUTO;
   int long_mode = LV_LABEL_LONG_WRAP;
   int width = 0;
   bool wrapped = false;
@@ -59,6 +63,8 @@ void lv_obj_set_width(lv_obj_t *obj, int width) { obj->width = width; }
 void lv_label_set_long_mode(lv_obj_t *obj, int mode) { obj->long_mode = mode; }
 void lv_obj_set_style_text_font(lv_obj_t *obj, const lv_font_t *font, int) { obj->font = font; }
 void lv_obj_set_style_translate_y(lv_obj_t *, int, int) {}
+void lv_obj_align(lv_obj_t *obj, int align, int, int) { obj->align = align; }
+void lv_obj_set_style_text_align(lv_obj_t *obj, int align, int) { obj->text_align = align; }
 void lv_label_set_display_text(lv_obj_t *label, const char *text) {
   label->content = text;
   label->wrapped = false;
@@ -161,6 +167,7 @@ int main() {
     assert(espcontrol::cards::sensor_driver_setup_visual(card.slot, config, context, palette));
     assert(!(card.icon.flags & LV_OBJ_FLAG_HIDDEN));
     assert(card.container.flags & LV_OBJ_FLAG_HIDDEN);
+    assert(card.container.align == LV_ALIGN_TOP_LEFT);
     assert(espcontrol::cards::sensor_driver_bind_data(card.slot, config, context, palette, 2));
     feed("onsdag");
     assert(card.label.content == "Onsdag" && card.label.wrapped);
@@ -170,7 +177,7 @@ int main() {
     // Large Text on a Wide card: icon hidden, state in the value label with
     // the large title font, bottom label left empty.
     Card card;
-    card.container.flags = LV_OBJ_FLAG_HIDDEN;
+    card.container.flags = LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_SCROLLABLE;
     const ParsedCfg config = text_sensor("large_text");
     assert(sensor_large_text_enabled(config));
     assert(espcontrol::cards::sensor_driver_setup_visual(card.slot, config, context, palette));
@@ -178,8 +185,15 @@ int main() {
     assert(!(card.container.flags & LV_OBJ_FLAG_HIDDEN));
     assert(card.value.long_mode == LV_LABEL_LONG_DOT);
     assert(card.value.content == "--" && card.unit.content.empty() && card.label.content.empty());
+    // Centred, and no scrollbar: unit hidden, container not scrollable.
+    assert(card.container.align == LV_ALIGN_CENTER);
+    assert(card.value.text_align == LV_TEXT_ALIGN_CENTER);
+    assert(card.unit.flags & LV_OBJ_FLAG_HIDDEN);
+    assert(card.label.flags & LV_OBJ_FLAG_HIDDEN);
+    assert(!(card.container.flags & LV_OBJ_FLAG_SCROLLABLE));
     assert(espcontrol::cards::sensor_driver_refresh_layout(card.slot, config, context, display, 1, 2));
     assert(card.value.font == &control_title_font);
+    assert(card.container.align == LV_ALIGN_CENTER);
     assert(espcontrol::cards::sensor_driver_bind_data(card.slot, config, context, palette, 2));
     feed("onsdag");
     assert(card.value.content == "Onsdag" && !card.value.wrapped);
@@ -214,4 +228,4 @@ with tempfile.TemporaryDirectory(prefix="sensor-large-text-") as directory:
     subprocess.run([sys.argv[1] if len(sys.argv) > 1 else "c++", "-std=c++17", "-Wall", "-Wextra", "-Werror",
                     "-I" + str(root / "tests/firmware/stubs"), "-I" + str(headers), str(cpp), "-o", str(binary)], check=True)
     subprocess.run([str(binary)], check=True)
-print("Sensor Large Text checks passed: icon hidden, value label, font by card width, text-mode only.")
+print("Sensor Large Text checks passed: centred value label, no scrollbar, font by card width, text-mode only.")

@@ -46,16 +46,24 @@ inline bool sensor_driver_setup_visual(
   lv_obj_clear_flag(slot.btn, LV_OBJ_FLAG_CLICKABLE);
 
   if (sensor_large_text_enabled(config)) {
-    // Large Text reuses the value label in place of the icon. The font is
-    // chosen from the card size in sensor_driver_refresh_layout().
+    // Large Text reuses the value label in place of the icon, centred in the
+    // card. The font is chosen from the card size in
+    // sensor_driver_refresh_layout(). The unit label is hidden and the
+    // container is not scrollable, so a full-width value cannot overflow the
+    // row and show a scrollbar under the text.
     lv_obj_add_flag(slot.icon_lbl, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(slot.unit_lbl, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(slot.sensor_container, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(slot.sensor_container, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_width(slot.sensor_container, lv_pct(100));
+    lv_obj_align(slot.sensor_container, LV_ALIGN_CENTER, 0, 0);
     lv_label_set_long_mode(slot.sensor_lbl, LV_LABEL_LONG_DOT);
     lv_obj_set_width(slot.sensor_lbl, lv_pct(100));
+    lv_obj_set_style_text_align(slot.sensor_lbl, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN);
     lv_label_set_display_text(slot.sensor_lbl, "--");
     lv_label_set_display_text(slot.unit_lbl, "");
-    lv_label_set_display_text(slot.text_lbl, config.label.c_str());
+    lv_label_set_display_text(slot.text_lbl, "");
+    lv_obj_add_flag(slot.text_lbl, LV_OBJ_FLAG_HIDDEN);
     return true;
   }
 
@@ -108,6 +116,7 @@ inline bool sensor_driver_refresh_layout(
     if (slot.sensor_lbl && font) {
       lv_obj_set_style_text_font(slot.sensor_lbl, font, LV_PART_MAIN);
     }
+    if (slot.sensor_container) lv_obj_align(slot.sensor_container, LV_ALIGN_CENTER, 0, 0);
     return true;
   }
   if (sensor_driver_is_local(config, context) ||
