@@ -105,6 +105,36 @@
     }
   },
   {
+    "name": "text sensor keeps large text",
+    "input": "sensor.ukedag;;Clock;Auto;sensor.ukedag;;sensor;text;large_numbers,large_text",
+    "expected": {
+      "entity": "sensor.ukedag",
+      "label": "",
+      "icon": "Clock",
+      "icon_on": "Auto",
+      "sensor": "sensor.ukedag",
+      "unit": "",
+      "type": "sensor",
+      "precision": "text",
+      "options": "large_text"
+    }
+  },
+  {
+    "name": "numeric sensor drops large text",
+    "input": "sensor.temp;Temp;Auto;Auto;sensor.temp;C;sensor;;large_text",
+    "expected": {
+      "entity": "sensor.temp",
+      "label": "Temp",
+      "icon": "Auto",
+      "icon_on": "Auto",
+      "sensor": "sensor.temp",
+      "unit": "C",
+      "type": "sensor",
+      "precision": "",
+      "options": ""
+    }
+  },
+  {
     "name": "legacy text labels migrate to state translations",
     "input": "sensor.bin_level;Bin;Trash Can;Auto;sensor.bin_level;;sensor;text;state_labels,state_high_label=Please%20empty,state_low_label=Full",
     "expected": {

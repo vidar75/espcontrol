@@ -134,6 +134,7 @@ inline bool normalize_saved_config_sensor_shadow(Config &config) {
     if (!output_2_trimmed.empty()) saved_config_shadow_append_option(out, "state_output_2", output_2_trimmed);
   }
   if (config.precision == "time") { const std::string time_unit = cfg_option_value(source, "time_unit"); if (time_unit == "seconds" || time_unit == "minutes" || time_unit == "hours" || time_unit == "days") saved_config_shadow_append_option(out, "time_unit", time_unit); }
+  if (config.precision == "text" && cfg_option_token_present(source, "large_text")) saved_config_shadow_append_option(out, "large_text");
   config.options = out; return true;
 }
 

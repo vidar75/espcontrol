@@ -2650,6 +2650,7 @@ def gen_saved_config_shadow_ts(data):
         "    }\n"
         "  }\n"
         "  if (config.precision === \"time\") { const timeUnit = optionValue(source, \"time_unit\"); if ([\"seconds\", \"minutes\", \"hours\", \"days\"].indexOf(timeUnit) >= 0) out.push(\"time_unit=\" + timeUnit); }\n"
+        "  if (config.precision === \"text\" && optionPresent(source, \"large_text\")) out.push(\"large_text\");\n"
         "  config.options = out.join(\",\"); return config;\n"
         "}\n"
         "\n"
@@ -2827,6 +2828,7 @@ def gen_saved_config_shadow_h(data):
         "    if (!output_2_trimmed.empty()) saved_config_shadow_append_option(out, \"state_output_2\", output_2_trimmed);\n",
         "  }\n",
         "  if (config.precision == \"time\") { const std::string time_unit = cfg_option_value(source, \"time_unit\"); if (time_unit == \"seconds\" || time_unit == \"minutes\" || time_unit == \"hours\" || time_unit == \"days\") saved_config_shadow_append_option(out, \"time_unit\", time_unit); }\n",
+        "  if (config.precision == \"text\" && cfg_option_token_present(source, \"large_text\")) saved_config_shadow_append_option(out, \"large_text\");\n",
         "  config.options = out; return true;\n}\n\n",
         "template<typename Config>\ninline bool normalize_saved_config_action_shadow(Config &config) {\n",
         "  if (config.type == \"local\") { config.type = \"action\"; config.sensor = \"local\"; }\n",

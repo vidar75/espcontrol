@@ -42,6 +42,7 @@ constexpr const char *SENSOR_STATE_OUTPUT_2_OPTION = card_runtime_option_name_st
 constexpr const char *SENSOR_STATE_LOW_LABEL_OPTION = card_runtime_option_name_state_low_label();
 constexpr const char *SENSOR_STATE_HIGH_LABEL_OPTION = card_runtime_option_name_state_high_label();
 constexpr const char *SENSOR_TIME_UNIT_OPTION = card_runtime_option_name_time_unit();
+constexpr const char *SENSOR_LARGE_TEXT_OPTION = card_runtime_option_name_large_text();
 constexpr const char *IMAGE_LABEL_OPTION = card_runtime_option_name_image_label();
 constexpr const char *IMAGE_ICON_OPTION = card_runtime_option_name_image_icon();
 constexpr const char *IMAGE_MODAL_MODE_OPTION = card_runtime_option_name_image_modal_mode();
@@ -748,6 +749,10 @@ inline std::string sensor_card_options_normalized(const std::string &options,
       if (!out.empty()) out += ",";
       out += std::string(SENSOR_TIME_UNIT_OPTION) + "=" + time_unit;
     }
+  }
+  if (precision == "text" && cfg_option_token_present(options, SENSOR_LARGE_TEXT_OPTION)) {
+    if (!out.empty()) out += ",";
+    out += SENSOR_LARGE_TEXT_OPTION;
   }
   return out;
 }
@@ -1510,6 +1515,14 @@ inline bool sensor_large_numbers_enabled(const ParsedCfg &p) {
 
 inline bool sensor_active_color_enabled(const ParsedCfg &p) {
   return p.type == "sensor" && cfg_option_enabled(p.options, "active_color");
+}
+
+// Large Text shows a Home Assistant text state in a title-size font in
+// place of the icon, for short values such as a weekday name.
+inline bool sensor_large_text_enabled(const ParsedCfg &p) {
+  return p.type == "sensor" && p.precision == "text" &&
+         !sensor_card_local_sensor(p) &&
+         cfg_option_enabled(p.options, SENSOR_LARGE_TEXT_OPTION);
 }
 
 inline bool sensor_state_labels_enabled(const ParsedCfg &p) {

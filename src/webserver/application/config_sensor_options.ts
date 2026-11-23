@@ -12,6 +12,7 @@ import {
     SENSOR_ACTIVE_COLOR_OPTION,
     SENSOR_LARGE_NUMBERS_OFF_VALUE,
     SENSOR_LARGE_NUMBERS_OPTION,
+    SENSOR_LARGE_TEXT_OPTION,
     SENSOR_STATE_HIGH_LABEL_OPTION,
     SENSOR_STATE_INPUT_2_OPTION,
     SENSOR_STATE_INPUT_OPTION,
@@ -84,6 +85,17 @@ export function createConfigSensorOptionsFeature(cardRegistry: CardRegistry) {
         if (!b)
             return "";
         b.options = setConfigOption(b.options, SENSOR_ACTIVE_COLOR_OPTION, enabled);
+        return b.options;
+    }
+    function sensorLargeTextEnabled(this: any, b?: any) {
+        return !!(b && b.type === "sensor" && b.precision === "text" &&
+            !sensorCardIsLocal(b) &&
+            configOptionEnabled(b.options, SENSOR_LARGE_TEXT_OPTION));
+    }
+    function setSensorLargeTextEnabled(this: any, b?: any, enabled?: any) {
+        if (!b)
+            return "";
+        b.options = setConfigOption(b.options, SENSOR_LARGE_TEXT_OPTION, enabled);
         return b.options;
     }
     function sensorStateLabelsEnabled(this: any, b?: any) {
@@ -166,6 +178,8 @@ export function createConfigSensorOptionsFeature(cardRegistry: CardRegistry) {
         }
         if (precision === "time")
             out = setConfigOptionValue(out, SENSOR_TIME_UNIT_OPTION, normalizeSensorTimeUnit(configOptionValue(options, SENSOR_TIME_UNIT_OPTION)));
+        if (precision === "text" && configOptionEnabled(options, SENSOR_LARGE_TEXT_OPTION))
+            out = setConfigOption(out, SENSOR_LARGE_TEXT_OPTION, true);
         return preserveCardColorOptions(options, out);
     }
     function normalizeDateTimeOptions(this: any, type?: any, options?: any, precision?: any) {
@@ -239,6 +253,8 @@ export function createConfigSensorOptionsFeature(cardRegistry: CardRegistry) {
         setSensorTimeUnit,
         sensorActiveColorEnabled,
         setSensorActiveColorEnabled,
+        sensorLargeTextEnabled,
+        setSensorLargeTextEnabled,
         sensorStateLabelsEnabled,
         legacySensorStateInput,
         legacySensorStateOutput,

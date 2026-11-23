@@ -332,6 +332,7 @@ constexpr const char *CARD_CONTRACT_OPTION_NAME_IMAGE_MODAL_REFRESH_TRIGGER = "i
 constexpr const char *CARD_CONTRACT_OPTION_NAME_INTERNAL_MODE = "internal_mode";
 constexpr const char *CARD_CONTRACT_OPTION_NAME_LABEL_DISPLAY = "label_display";
 constexpr const char *CARD_CONTRACT_OPTION_NAME_LARGE_NUMBERS = "large_numbers";
+constexpr const char *CARD_CONTRACT_OPTION_NAME_LARGE_TEXT = "large_text";
 constexpr const char *CARD_CONTRACT_OPTION_NAME_LAWN_MOWER_MODE = "lawn_mower_mode";
 constexpr const char *CARD_CONTRACT_OPTION_NAME_LIGHT_TABS = "light_tabs";
 constexpr const char *CARD_CONTRACT_OPTION_NAME_LOCK_MODE = "lock_mode";

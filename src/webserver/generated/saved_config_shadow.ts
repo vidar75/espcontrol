@@ -109,7 +109,8 @@ export const SAVED_CONFIG_SHADOW_PILOT_POLICIES: Readonly<Record<string, CardNor
       "state_input",
       "state_output",
       "state_input_2",
-      "state_output_2"
+      "state_output_2",
+      "large_text"
     ],
     "optionHook": "normalize_sensor_options",
     "migrationActions": [
@@ -388,6 +389,7 @@ export function normalizeSavedConfigSensorShadow(input: Partial<CardConfig>): Ca
     }
   }
   if (config.precision === "time") { const timeUnit = optionValue(source, "time_unit"); if (["seconds", "minutes", "hours", "days"].indexOf(timeUnit) >= 0) out.push("time_unit=" + timeUnit); }
+  if (config.precision === "text" && optionPresent(source, "large_text")) out.push("large_text");
   config.options = out.join(","); return config;
 }
 

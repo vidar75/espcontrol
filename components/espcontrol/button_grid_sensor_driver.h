@@ -45,6 +45,20 @@ inline bool sensor_driver_setup_visual(
 
   lv_obj_clear_flag(slot.btn, LV_OBJ_FLAG_CLICKABLE);
 
+  if (sensor_large_text_enabled(config)) {
+    // Large Text reuses the value label in place of the icon. The font is
+    // chosen from the card size in sensor_driver_refresh_layout().
+    lv_obj_add_flag(slot.icon_lbl, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(slot.sensor_container, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_set_width(slot.sensor_container, lv_pct(100));
+    lv_label_set_long_mode(slot.sensor_lbl, LV_LABEL_LONG_DOT);
+    lv_obj_set_width(slot.sensor_lbl, lv_pct(100));
+    lv_label_set_display_text(slot.sensor_lbl, "--");
+    lv_label_set_display_text(slot.unit_lbl, "");
+    lv_label_set_display_text(slot.text_lbl, config.label.c_str());
+    return true;
+  }
+
   if (sensor_driver_is_text(config, context)) {
     setup_toggle_visual(slot, config);
     lv_obj_clear_flag(slot.icon_lbl, LV_OBJ_FLAG_HIDDEN);
@@ -85,6 +99,17 @@ inline bool sensor_driver_refresh_layout(
     BtnSlot &slot, const ParsedCfg &config, const Context &context,
     const DisplayProfile &display, int row_span, int col_span) {
   if (!sensor_driver_matches(context)) return false;
+  if (sensor_large_text_enabled(config)) {
+    // Wide and Large cards get the media-control title font; a Single card
+    // keeps the smaller title font so short words still fit its width.
+    const lv_font_t *font = col_span > 1
+      ? display_media_control_title_font(display)
+      : display_media_title_font(display);
+    if (slot.sensor_lbl && font) {
+      lv_obj_set_style_text_font(slot.sensor_lbl, font, LV_PART_MAIN);
+    }
+    return true;
+  }
   if (sensor_driver_is_local(config, context) ||
       sensor_driver_is_text(config, context) || config.precision == "icon") {
     return true;
@@ -183,9 +208,12 @@ inline bool sensor_driver_bind_data(
   }
   if (is_text_sensor_card(config)) {
     if (!config.sensor.empty()) {
+      const bool large_text = sensor_large_text_enabled(config);
       subscribe_sensor_text_card_value(
-        slot.text_lbl, config, slot.btn, sensor_active_color_enabled(config),
-        palette.on_val, true, palette.custom_background ? palette.surface_sensor_val : UINT32_MAX);
+        large_text ? slot.sensor_lbl : slot.text_lbl, config, slot.btn,
+        sensor_active_color_enabled(config), palette.on_val, true,
+        palette.custom_background ? palette.surface_sensor_val : UINT32_MAX,
+        !large_text);
     }
     return true;
   }

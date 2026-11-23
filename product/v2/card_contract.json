@@ -3921,6 +3921,25 @@
               "text"
             ]
           }
+        },
+        {
+          "name": "large_text",
+          "label": "Large Text",
+          "kind": "flag",
+          "omitDefault": true,
+          "applicability": [
+            {
+              "source": "field",
+              "name": "precision",
+              "operator": "equals",
+              "value": "text"
+            }
+          ],
+          "supportedWhen": {
+            "precision": [
+              "text"
+            ]
+          }
         }
       ],
       "normalization": {
@@ -3968,7 +3987,8 @@
           "state_input",
           "state_output",
           "state_input_2",
-          "state_output_2"
+          "state_output_2",
+          "large_text"
         ],
         "optionHook": "normalize_sensor_options",
         "migrationActions": [

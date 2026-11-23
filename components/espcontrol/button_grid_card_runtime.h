@@ -239,6 +239,10 @@ inline const char *card_runtime_option_select_canonical_action() {
   return CARD_CONTRACT_OPTION_SELECT_ACTION;
 }
 
+constexpr const char *card_runtime_option_name_large_text() {
+  return CARD_CONTRACT_OPTION_NAME_LARGE_TEXT;
+}
+
 constexpr const char *card_runtime_option_name_state_labels() {
   return CARD_CONTRACT_OPTION_NAME_STATE_LABELS;
 }

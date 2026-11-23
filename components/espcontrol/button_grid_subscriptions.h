@@ -253,18 +253,25 @@ inline void subscribe_sensor_text_card_value(lv_obj_t *text_lbl, const ParsedCfg
                                              bool active_color = false,
                                              uint32_t on_color = DEFAULT_ACCENT_COLOR,
                                              bool sensor_surface = true,
-                                             uint32_t custom_sensor_color = UINT32_MAX) {
+                                             uint32_t custom_sensor_color = UINT32_MAX,
+                                             bool wrap_label = true) {
   if (p.sensor.empty()) return;
   ha_subscribe_state(
     p.sensor,
     std::function<void(esphome::StringRef)>(
-      [text_lbl, p, availability_obj, active_color, on_color, sensor_surface, custom_sensor_color](esphome::StringRef state) {
+      [text_lbl, p, availability_obj, active_color, on_color, sensor_surface, custom_sensor_color, wrap_label](esphome::StringRef state) {
       bool unavailable = ha_state_unavailable_ref(state);
       apply_sensor_active_color(availability_obj, active_color, state,
         on_color, custom_sensor_color != UINT32_MAX ? custom_sensor_color
           : (sensor_surface ? current_grid_sensor_surface_color() : current_grid_sensor_color()),
         unavailable, false, custom_sensor_color != UINT32_MAX);
-      set_wrapped_button_label_text(text_lbl, sensor_state_display_text(p, state));
+      const std::string text = sensor_state_display_text(p, state);
+      if (wrap_label) {
+        set_wrapped_button_label_text(text_lbl, text);
+      } else if (text_lbl) {
+        // Large Text: a single line in the value label, keep its position.
+        lv_label_set_display_text(text_lbl, text.c_str());
+      }
     })
   );
 }

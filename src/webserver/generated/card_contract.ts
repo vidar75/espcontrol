@@ -3425,6 +3425,25 @@ export const CARD_CONTRACT_CARDS: Readonly<Record<string, CardTypeSpec>> = {
             "text"
           ]
         }
+      },
+      {
+        "name": "large_text",
+        "label": "Large Text",
+        "kind": "flag",
+        "omitDefault": true,
+        "applicability": [
+          {
+            "source": "field",
+            "name": "precision",
+            "operator": "equals",
+            "value": "text"
+          }
+        ],
+        "supportedWhen": {
+          "precision": [
+            "text"
+          ]
+        }
       }
     ],
     "normalization": {
@@ -3472,7 +3491,8 @@ export const CARD_CONTRACT_CARDS: Readonly<Record<string, CardTypeSpec>> = {
         "state_input",
         "state_output",
         "state_input_2",
-        "state_output_2"
+        "state_output_2",
+        "large_text"
       ],
       "optionHook": "normalize_sensor_options",
       "migrationActions": [
@@ -5026,6 +5046,7 @@ export const CARD_CONTRACT_OPTION_NAMES: Readonly<Record<string, string>> = {
   "internal_mode": "internal_mode",
   "label_display": "label_display",
   "large_numbers": "large_numbers",
+  "large_text": "large_text",
   "lawn_mower_mode": "lawn_mower_mode",
   "light_tabs": "light_tabs",
   "lock_mode": "lock_mode",

@@ -30,6 +30,8 @@ export function registerSensorCardTypes(
         sensorTimeUnit,
         setSensorTimeUnit,
         setSensorActiveColorEnabled,
+        sensorLargeTextEnabled,
+        setSensorLargeTextEnabled,
         sensorStateLabelsEnabled,
         sensorStateInput,
         sensorStateOutput,
@@ -194,12 +196,30 @@ export function registerSensorCardTypes(
             timeSection.appendChild(timeUnitField.field);
             panel.appendChild(timeSection);
             var textSection: any = condField();
-            var textIconPicker: any = helpers.renderCardIconPicker(textSection, b, helpers, {
+            var largeTextToggle: any = toggleRow("Large Text", helpers.idPrefix + "sensor-large-text", sensorLargeTextEnabled(b));
+            textSection.appendChild(largeTextToggle.row);
+            var largeTextNote: any = document.createElement("div");
+            largeTextNote.className = "sp-apply-note";
+            largeTextNote.textContent = "Shows the state in a big font instead of the icon. Best for short text, such as a weekday name, on a Wide card.";
+            textSection.appendChild(largeTextNote);
+            var textIconHolder: any = document.createElement("div");
+            textSection.appendChild(textIconHolder);
+            var textIconPicker: any = helpers.renderCardIconPicker(textIconHolder, b, helpers, {
                 pickerIdSuffix: "icon-picker",
                 idSuffix: "icon",
                 field: "icon",
                 fallback: "Auto",
             });
+            function syncLargeTextVisibility(this: any) {
+                textIconHolder.style.display = sensorLargeTextEnabled(b) ? "none" : "";
+            }
+            largeTextToggle.input.addEventListener("change", function (this: any) {
+                setSensorLargeTextEnabled(b, this.checked);
+                helpers.saveField("options", b.options);
+                syncLargeTextVisibility();
+                renderButtonSettings();
+            });
+            syncLargeTextVisibility();
             panel.appendChild(textSection);
             var iconSection: any = condField();
             var offIconPicker: any = helpers.renderCardIconPicker(iconSection, b, helpers, {
@@ -343,6 +363,13 @@ export function registerSensorCardTypes(
                 return {
                     iconHtml: '<span class="sp-btn-icon mdi mdi-' + stateIconName + '"></span>',
                     labelHtml: cardBadgeLabelHtml(helpers, b.label || b.sensor || "Sensor", SENSOR_CARD_METADATA.preview.iconBadge),
+                };
+            }
+            if (b.precision === "text" && sensorLargeTextEnabled(b)) {
+                return {
+                    iconHtml: cardSensorPreviewHtml(b, helpers, "State", ""),
+                    labelHtml: cardBadgeLabelHtml(helpers, "", SENSOR_CARD_METADATA.preview.textBadge),
+                    labelEditable: false,
                 };
             }
             if (b.precision === "text") {
